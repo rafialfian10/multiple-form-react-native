@@ -108,7 +108,6 @@ function ModalPhoto(props) {
                 fotoSelfie: { ...form.fotoSelfie, ...foto },
               });
               setModalFotoSelfie(false);
-              setError({ ...error, fotoSelfie: "" });
               break;
             case modalFotoKtp:
               setForm({

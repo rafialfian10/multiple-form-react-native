@@ -26,6 +26,8 @@ const Form = ({ navigation }) => {
     fotoKtp: {},
     fotoSim: {},
     fotoStnk: {},
+    fotoKerusakan: [],
+    deskripsiKerusakan: [],
   });
   const [error, setError] = useState({
     firstName: "",
@@ -39,15 +41,17 @@ const Form = ({ navigation }) => {
     fotoKtp: "",
     fotoSim: "",
     fotoStnk: "",
+    fotoKerusakan: "",
+    deskripsiKerusakan: "",
   });
 
-  // console.log("Form mazeh",form);
-  console.log("Error mazeh",error);
+  console.log("Form mazeh",form);
+  // console.log("Error mazeh",error);
 
   const screenDisplay = () => {
     if (screen === 0) {
       return (
-        <Form1
+        <Form3
           form={form}
           setForm={setForm}
           error={error}
@@ -154,6 +158,20 @@ const Form = ({ navigation }) => {
         isValid = false;
       } else {
         newErrors.fotoStnk = "";
+      }
+    } else if(screen === 2) {
+      if (form.fotoKerusakan.length === 0) {
+        newErrors.fotoKerusakan = "Foto kerusakan wajib di isi";
+        isValid = false;
+      } else {
+        newErrors.fotoKerusakan = "";
+      }
+
+      if (form.deskripsiKerusakan.length === 0) {
+        newErrors.deskripsiKerusakan = "Deskripsi kerusakan wajib di isi";
+        isValid = false;
+      } else {
+        newErrors.deskripsiKerusakan = "";
       }
     }
 
