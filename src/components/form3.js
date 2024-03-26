@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   AntDesign,
   Feather,
@@ -16,6 +16,17 @@ import {
 import collaboration from "../../assets/collaboration.png";
 
 function Form3({ form, setForm, error, setError }) {
+  const [elements, setElements] = useState([{ id: 1 }]);
+
+  const addElement = () => {
+    setElements([...elements, { id: elements.length + 1 }]);
+  };
+
+  const removeElement = (index) => {
+    const updatedElements = elements.filter((_, i) => i !== index);
+    setElements(updatedElements);
+  };
+
   return (
     <View style={styles.containerForm}>
       <View style={styles.contentFormIcon}>
@@ -41,7 +52,11 @@ function Form3({ form, setForm, error, setError }) {
         <View style={styles.subContentFormIcon2}>
           <View style={styles.subContentFormBox2}></View>
           <View style={styles.iconForm2}>
-            <Image source={collaboration} alt="collaboration" style={styles.collaborationImage} />
+            <Image
+              source={collaboration}
+              alt="collaboration"
+              style={styles.collaborationImage}
+            />
             <Ionicons
               name="checkmark-circle"
               size={22}
@@ -69,7 +84,8 @@ function Form3({ form, setForm, error, setError }) {
           <Text style={styles.informationRegistrasiKlaimValue}>VCL2007001</Text>
         </View>
       </View>
-      <View style={styles.contentFotoKerusakan}>
+
+      {/* <View style={styles.contentFotoKerusakan}>
         <View style={styles.subContentKerusakan}>
           <TouchableOpacity>
             <AntDesign name="edit" size={20} color="green" />
@@ -98,13 +114,51 @@ function Form3({ form, setForm, error, setError }) {
             numberOfLines={4}
           />
         </View>
-      </View>
+      </View> */}
+
+      {elements.map((element, index) => (
+        <View style={styles.contentFotoKerusakan} key={index}>
+          <View style={styles.subContentKerusakan}>
+            <TouchableOpacity>
+              <AntDesign name="edit" size={20} color="green" />
+            </TouchableOpacity>
+            <Text style={styles.textKerusakan}>Foto Kerusakan {index + 1}</Text>
+          </View>
+          <View style={styles.subContentFotoKerusakan}>
+            <View style={styles.fotoKerusakan}>
+              {/* <Image
+                source={{ uri: "https://via.placeholder.com/150" }}
+                style={{ width: "100%", height: "100%" }}
+              /> */}
+            </View>
+            <View style={styles.filenameKerusakan}>
+              <Text style={styles.textFilenameKerusakan}>filee.jpg</Text>
+              <Text style={styles.textFilesizeKerusakan}>1 Mb</Text>
+            </View>
+            <View style={styles.iconTrash}>
+              <TouchableOpacity onPress={() => removeElement(index)}>
+                <Feather name="trash-2" size={24} color="#3567FC" />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.subContentDeskripsiKerusakan}>
+            <TextInput
+              style={styles.deskripsiKerusakan}
+              placeholder="Deskripsi kerusakan"
+              multiline={true}
+              numberOfLines={4}
+            />
+          </View>
+        </View>
+      ))}
+
       <View style={styles.subContentButtonTambah}>
-        <TouchableOpacity style={styles.btnTambah}>
+        <TouchableOpacity style={styles.btnTambah} onPress={addElement}>
           <AntDesign name="pluscircleo" size={28} color="#3567FC" />
+          <Text style={styles.textTambahFoto}>Tambah Foto</Text>
         </TouchableOpacity>
-        <Text style={styles.textTambahFoto}>Tambah Foto</Text>
       </View>
+
       <View style={styles.subContentButtonSimpan}>
         <TouchableOpacity style={styles.btnSimpan}>
           <Text style={styles.textSimpan}>Simpan</Text>
@@ -307,9 +361,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   btnTambah: {
-    marginRight: 10,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
   textTambahFoto: {
+    marginLeft: 5,
     color: "#3567FC",
   },
   subContentButtonSimpan: {

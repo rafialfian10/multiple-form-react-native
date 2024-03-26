@@ -45,9 +45,6 @@ const Form = ({ navigation }) => {
     deskripsiKerusakan: "",
   });
 
-  console.log("Form mazeh",form);
-  // console.log("Error mazeh",error);
-
   const screenDisplay = () => {
     if (screen === 0) {
       return (

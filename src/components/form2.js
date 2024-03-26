@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, TouchableOpacity, Image } from "react-native";
 import {
   AntDesign,
   FontAwesome,
@@ -12,6 +12,29 @@ function Form2({ form, setForm, error, setError }) {
   const [modalFotoKtp, setModalFotoKtp] = useState(false);
   const [modalFotoSim, setModalFotoSim] = useState(false);
   const [modalFotoStnk, setModalFotoStnk] = useState(false);
+
+  const handleDeletePhoto = (photoType) => {
+    const updatedForm = { ...form };
+
+    switch (photoType) {
+      case "fotoSelfie":
+        updatedForm.fotoSelfie = {};
+        break;
+      case "fotoKtp":
+        updatedForm.fotoKtp = {};
+        break;
+      case "fotoSim":
+        updatedForm.fotoSim = {};
+        break;
+      case "fotoStnk":
+        updatedForm.fotoStnk = {};
+        break;
+      default:
+        break;
+    }
+
+    setForm(updatedForm);
+  };
 
   return (
     <View style={styles.containerForm}>
@@ -65,15 +88,36 @@ function Form2({ form, setForm, error, setError }) {
       <View style={styles.contentInput}>
         <View style={styles.subContentInput}>
           <Text style={styles.labelInput}>Foto Selfie</Text>
-          <View style={styles.contentFoto}>
-            <TouchableOpacity onPress={() => setModalFotoSelfie(true)}>
-              <AntDesign name="pluscircleo" size={35} color="#3567FC" />
-            </TouchableOpacity>
-            <Text style={styles.textFoto}>Upload Foto Selfie</Text>
-            <View style={styles.contentTrash}>
-              <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+          {form.fotoSelfie.uri ? (
+            <View style={styles.contentFoto}>
+              <Image
+                source={{ uri: form.fotoSelfie.uri }}
+                style={styles.foto}
+              />
+              <View style={styles.contentTrash}>
+                <TouchableOpacity
+                  onPress={() => handleDeletePhoto("fotoSelfie")}
+                >
+                  <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          ) : (
+            <View style={styles.contentFoto}>
+              <TouchableOpacity onPress={() => setModalFotoSelfie(true)}>
+                <AntDesign name="pluscircleo" size={35} color="#3567FC" />
+              </TouchableOpacity>
+              <Text style={styles.textFoto}>Upload Foto Selfie</Text>
+              <View style={styles.contentTrash}>
+                <TouchableOpacity
+                  onPress={() => handleDeletePhoto("fotoSelfie")}
+                >
+                  <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+
           <Text style={styles.textFoto2}>
             * Data pada foto selfie harus terlihat jelas
           </Text>
@@ -81,18 +125,30 @@ function Form2({ form, setForm, error, setError }) {
             <Text style={styles.errorForm}>{error.fotoSelfie}</Text>
           )}
         </View>
-
         <View style={styles.subContentInput}>
           <Text style={styles.labelInput}>Foto KTP</Text>
-          <View style={styles.contentFoto}>
-            <TouchableOpacity onPress={() => setModalFotoKtp(true)}>
-              <AntDesign name="pluscircleo" size={35} color="#3567FC" />
-            </TouchableOpacity>
-            <Text style={styles.textFoto}>Upload Foto KTP</Text>
-            <View style={styles.contentTrash}>
-              <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+          {form.fotoKtp.uri ? (
+            <View style={styles.contentFoto}>
+              <Image source={{ uri: form.fotoKtp.uri }} style={styles.foto} />
+              <View style={styles.contentTrash}>
+                <TouchableOpacity onPress={() => handleDeletePhoto("fotoKtp")}>
+                  <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          ) : (
+            <View style={styles.contentFoto}>
+              <TouchableOpacity onPress={() => setModalFotoKtp(true)}>
+                <AntDesign name="pluscircleo" size={35} color="#3567FC" />
+              </TouchableOpacity>
+              <Text style={styles.textFoto}>Upload Foto KTP</Text>
+              <View style={styles.contentTrash}>
+                <TouchableOpacity onPress={() => handleDeletePhoto("fotoKtp")}>
+                  <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
           <Text style={styles.textFoto2}>
             * Data pada foto KTP harus terlihat jelas
           </Text>
@@ -100,18 +156,30 @@ function Form2({ form, setForm, error, setError }) {
             <Text style={styles.errorForm}>{error.fotoKtp}</Text>
           )}
         </View>
-
         <View style={styles.subContentInput}>
           <Text style={styles.labelInput}>Foto SIM</Text>
-          <View style={styles.contentFoto}>
-            <TouchableOpacity onPress={() => setModalFotoSim(true)}>
-              <AntDesign name="pluscircleo" size={35} color="#3567FC" />
-            </TouchableOpacity>
-            <Text style={styles.textFoto}>Upload Foto SIM</Text>
-            <View style={styles.contentTrash}>
-              <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+          {form.fotoSim.uri ? (
+            <View style={styles.contentFoto}>
+              <Image source={{ uri: form.fotoSim.uri }} style={styles.foto} />
+              <View style={styles.contentTrash}>
+                <TouchableOpacity onPress={() => handleDeletePhoto("fotoSim")}>
+                  <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          ) : (
+            <View style={styles.contentFoto}>
+              <TouchableOpacity onPress={() => setModalFotoSim(true)}>
+                <AntDesign name="pluscircleo" size={35} color="#3567FC" />
+              </TouchableOpacity>
+              <Text style={styles.textFoto}>Upload Foto SIM</Text>
+              <View style={styles.contentTrash}>
+                <TouchableOpacity onPress={() => handleDeletePhoto("fotoSim")}>
+                  <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
           <Text style={styles.textFoto2}>
             * Data pada foto SIM harus terlihat jelas
           </Text>
@@ -119,18 +187,30 @@ function Form2({ form, setForm, error, setError }) {
             <Text style={styles.errorForm}>{error.fotoSim}</Text>
           )}
         </View>
-
         <View style={styles.subContentInput}>
           <Text style={styles.labelInput}>Foto STNK</Text>
-          <View style={styles.contentFoto}>
-            <TouchableOpacity onPress={() => setModalFotoStnk(true)}>
-              <AntDesign name="pluscircleo" size={35} color="#3567FC" />
-            </TouchableOpacity>
-            <Text style={styles.textFoto}>Upload Foto STNK</Text>
-            <View style={styles.contentTrash}>
-              <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+          {form.fotoStnk.uri ? (
+            <View style={styles.contentFoto}>
+              <Image source={{ uri: form.fotoStnk.uri }} style={styles.foto} />
+              <View style={styles.contentTrash}>
+                <TouchableOpacity onPress={() => handleDeletePhoto("fotoStnk")}>
+                  <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          ) : (
+            <View style={styles.contentFoto}>
+              <TouchableOpacity onPress={() => setModalFotoStnk(true)}>
+                <AntDesign name="pluscircleo" size={35} color="#3567FC" />
+              </TouchableOpacity>
+              <Text style={styles.textFoto}>Upload Foto STNK</Text>
+              <View style={styles.contentTrash}>
+                <TouchableOpacity onPress={() => handleDeletePhoto("fotoStnk")}>
+                  <FontAwesome name="trash-o" size={24} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
           <Text style={styles.textFoto2}>
             * Data pada foto STNK harus terlihat jelas
           </Text>
@@ -143,6 +223,8 @@ function Form2({ form, setForm, error, setError }) {
       <ModalPhoto
         form={form}
         setForm={setForm}
+        error={error}
+        setError={setError}
         modalFotoSelfie={modalFotoSelfie}
         setModalFotoSelfie={setModalFotoSelfie}
         modalFotoKtp={modalFotoKtp}
@@ -290,6 +372,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: "#A8A8A8",
     borderWidth: 1,
+    overflow: "hidden",
+  },
+  foto: {
+    width: "100%",
+    height: "100%",
   },
   textFoto: {
     marginTop: 10,

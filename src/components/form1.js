@@ -14,7 +14,7 @@ function Form1({ form, setForm, error, setError }) {
   const [idDesa, setIdDesa] = useState(null);
 
   // provinsi
-  const { provinsi, isLoadingProvinsi, refetchProvinsi } = GetProvinsi();
+  const { provinsi } = GetProvinsi();
   const provinsiOptions = provinsi
     ? provinsi.map((item) => ({
         key: item?.id,
@@ -23,7 +23,7 @@ function Form1({ form, setForm, error, setError }) {
     : [];
 
   // kota
-  const { kota, isLoadingKota, refetchKota } = GetKota(idProvinsi);
+  const { kota, refetchKota } = GetKota(idProvinsi);
   const kotaOptions = kota
     ? kota.map((item) => ({
         key: item?.id,
@@ -32,7 +32,7 @@ function Form1({ form, setForm, error, setError }) {
     : [];
 
   // kecamatan
-  const { kecamatan, isLoadingKecamatan, refetchKecamatan } =
+  const { kecamatan, refetchKecamatan } =
     GetKecamatan(idKota);
   const kecamatanOptions = kecamatan
     ? kecamatan.map((item) => ({
@@ -42,7 +42,7 @@ function Form1({ form, setForm, error, setError }) {
     : [];
 
   // desa
-  const { desa, isLoadingDesa, refetchDesa } = GetDesa(idKecamatan);
+  const { desa, refetchDesa } = GetDesa(idKecamatan);
   const desaOptions = desa
     ? desa.map((item) => ({
         key: item?.id,
@@ -86,7 +86,6 @@ function Form1({ form, setForm, error, setError }) {
         ...prevError,
         provinsi: value.trim() === "" ? "Provinsi wajib di isi" : "",
       }));
-      //   }
     }
 
     if (data === "kota") {

@@ -4,7 +4,6 @@ import {
   StyleSheet,
   View,
   Modal,
-  Alert,
   Text,
   TouchableOpacity,
 } from "react-native";
@@ -13,6 +12,8 @@ function ModalPhoto(props) {
   const {
     form,
     setForm,
+    error,
+    setError,
     modalFotoSelfie,
     setModalFotoSelfie,
     modalFotoKtp,
@@ -26,10 +27,12 @@ function ModalPhoto(props) {
   const handleOpenGallery = async () => {
     try {
       let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        // base64: true,
         allowsEditing: true,
         aspect: [4, 3],
         quality: 1,
+        allowsMultipleSelection: false
       });
 
       delete result.cancelled;
@@ -57,6 +60,7 @@ function ModalPhoto(props) {
               fotoKtp: { ...form.fotoKtp, ...foto },
             });
             setModalFotoKtp(false);
+            setError({ ...error, fotoKtp: "" });
             break;
           case modalFotoSim:
             setForm({
@@ -64,6 +68,7 @@ function ModalPhoto(props) {
               fotoSim: { ...form.fotoSim, ...foto },
             });
             setModalFotoSim(false);
+            setError({ ...error, fotoSim: "" });
             break;
           case modalFotoStnk:
             setForm({
@@ -71,6 +76,7 @@ function ModalPhoto(props) {
               fotoStnk: { ...form.fotoStnk, ...foto },
             });
             setModalFotoStnk(false);
+            setError({ ...error, fotoStnk: "" });
             break;
           default:
             break;
@@ -86,9 +92,11 @@ function ModalPhoto(props) {
       await ImagePicker.requestCameraPermissionsAsync();
       let result = await ImagePicker.launchCameraAsync({
         cameraType: ImagePicker.CameraType.front,
+        // base64: true,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 1,
+        allowsMultipleSelection: false,
       });
 
       delete result.cancelled;
@@ -108,6 +116,7 @@ function ModalPhoto(props) {
                 fotoSelfie: { ...form.fotoSelfie, ...foto },
               });
               setModalFotoSelfie(false);
+              setError({ ...error, fotoSelfie: "" });
               break;
             case modalFotoKtp:
               setForm({
@@ -115,6 +124,7 @@ function ModalPhoto(props) {
                 fotoKtp: { ...form.fotoKtp, ...foto },
               });
               setModalFotoKtp(false);
+              setError({ ...error, fotoKtp: "" });
               break;
             case modalFotoSim:
               setForm({
@@ -122,6 +132,7 @@ function ModalPhoto(props) {
                 fotoSim: { ...form.fotoSim, ...foto },
               });
               setModalFotoSim(false);
+              setError({ ...error, fotoSim: "" });
               break;
             case modalFotoStnk:
               setForm({
@@ -129,6 +140,7 @@ function ModalPhoto(props) {
                 fotoStnk: { ...form.fotoStnk, ...foto },
               });
               setModalFotoStnk(false);
+              setError({ ...error, fotoStnk: "" });
               break;
             default:
               break;
@@ -136,41 +148,6 @@ function ModalPhoto(props) {
       }
     } catch (error) {
       console.log("camera error", error);
-    }
-  };
-
-  const handleDeletePhoto = async () => {
-    try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
-
-      Alert.alert(
-        "Delete Photo",
-        "Are you sure?",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-          {
-            text: "OK",
-            onPress: async () => {
-              const response = await API.delete(`/user/photo`, config);
-
-              if (response?.status === 200) {
-                alert("Foto selfie berhasil dihapus");
-                setModalFoto(false);
-              }
-            },
-          },
-        ],
-        { cancelable: true }
-      );
-    } catch (error) {
-      console.log("Foto gagal di hapus", error);
     }
   };
 
@@ -183,7 +160,7 @@ function ModalPhoto(props) {
           modalFotoSelfie || modalFotoKtp || modalFotoSim || modalFotoStnk
         }
         onRequestClose={() => {
-          setModalFoto(false);
+          setModalFotoSelfie(false);
           setModalFotoKtp(false);
           setModalFotoSim(false);
           setModalFotoStnk(false);
@@ -213,13 +190,6 @@ function ModalPhoto(props) {
             >
               <FontAwesome name="image" size={25} color="grey" />
               <Text style={styles.textModalPhotoProfile}>Gallery</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.btnModalPhotoProfile}
-              onPress={handleDeletePhoto}
-            >
-              <FontAwesome name="trash" size={25} color="red" />
-              <Text style={styles.textModalPhotoProfile}>Remove</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
