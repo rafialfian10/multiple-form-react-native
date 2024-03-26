@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   AntDesign,
   Feather,
@@ -13,158 +13,177 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
+import ModalPhotoKerusakan from "./modalPhotoKerusakan";
 import collaboration from "../../assets/collaboration.png";
 
 function Form3({ form, setForm, error, setError }) {
-  const [elements, setElements] = useState([{ id: 1 }]);
+  const [modalFotoKerusakanIndex, setModalFotoKerusakanIndex] = useState(null);
+  const [elements, setElements] = useState(() => {
+    if (Array.isArray(form?.fotoKerusakan) && form?.fotoKerusakan.length > 0) {
+      return form?.fotoKerusakan?.map((item, index) => ({
+        id: index + 1,
+        foto: item,
+      }));
+    } else {
+      return [];
+    }
+  });
+
+  console.log("data", elements);
 
   const addElement = () => {
     setElements([...elements, { id: elements.length + 1 }]);
   };
 
   const removeElement = (index) => {
+    const updatedForm = { ...form };
+    updatedForm.fotoKerusakan.splice(index, 1);
+    setForm(updatedForm);
+
     const updatedElements = elements.filter((_, i) => i !== index);
     setElements(updatedElements);
   };
 
+  const handleDeskripsiChange = (index, deskripsi) => {
+    const updatedElements = [...elements];
+    updatedElements[index].deskripsi = deskripsi;
+    setElements(updatedElements);
+  };
+
   return (
-    <View style={styles.containerForm}>
-      <View style={styles.contentFormIcon}>
-        <View style={styles.subContentFormIcon1}>
-          <View style={styles.subContentFormBox1}></View>
-          <View style={styles.iconForm1}>
-            <MaterialCommunityIcons
-              name="car-outline"
-              size={35}
-              color="#3567FC"
-            />
-            <MaterialCommunityIcons
-              name="shield-check"
-              size={22}
-              color="#3567FC"
-              style={{ position: "absolute", top: 3, left: 35 }}
-            />
-          </View>
-          <View style={styles.contentTextIconForm1}>
-            <Text style={styles.textForm1}>Foto SIM & STNK</Text>
-          </View>
-        </View>
-        <View style={styles.subContentFormIcon2}>
-          <View style={styles.subContentFormBox2}></View>
-          <View style={styles.iconForm2}>
-            <Image
-              source={collaboration}
-              alt="collaboration"
-              style={styles.collaborationImage}
-            />
-            <Ionicons
-              name="checkmark-circle"
-              size={22}
-              color="green"
-              style={{ position: "absolute", top: 13, left: 22 }}
-            />
-          </View>
-        </View>
-      </View>
-      <View style={styles.contentInformationRegistrasiKlaim}>
-        <View style={styles.subContentInformationRegistrasiKlaim}>
-          <Text style={styles.informationRegistrasiKlaimKey}>No. Polisi</Text>
-          <Text style={styles.informationRegistrasiKlaimValue}>B 1234 EFG</Text>
-        </View>
-        <View style={styles.subContentInformationRegistrasiKlaim}>
-          <Text style={styles.informationRegistrasiKlaimKey}>
-            Nama tertanggung
-          </Text>
-          <Text style={styles.informationRegistrasiKlaimValue}>
-            Fajar Prihadi
-          </Text>
-        </View>
-        <View style={styles.subContentInformationRegistrasiKlaim}>
-          <Text style={styles.informationRegistrasiKlaimKey}>No. Polis</Text>
-          <Text style={styles.informationRegistrasiKlaimValue}>VCL2007001</Text>
-        </View>
-      </View>
-
-      {/* <View style={styles.contentFotoKerusakan}>
-        <View style={styles.subContentKerusakan}>
-          <TouchableOpacity>
-            <AntDesign name="edit" size={20} color="green" />
-          </TouchableOpacity>
-          <Text style={styles.textKerusakan}>Foto Kerusakan 1</Text>
-        </View>
-        <View style={styles.subContentFotoKerusakan}>
-          <View style={styles.fotoKerusakan}>
-            <Image src="" alt="foto-kerusakan" />
-          </View>
-          <View style={styles.filenameKerusakan}>
-            <Text style={styles.textFilenameKerusakan}>filee.jpg</Text>
-            <Text style={styles.textFilesizeKerusakan}>1 Mb</Text>
-          </View>
-          <View style={styles.iconTrash}>
-            <TouchableOpacity>
-              <Feather name="trash-2" size={24} color="#3567FC" />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.subContentDeskripsiKerusakan}>
-          <TextInput
-            style={styles.deskripsiKerusakan}
-            placeholder="Deskripsi kerusakan"
-            multiline={true}
-            numberOfLines={4}
-          />
-        </View>
-      </View> */}
-
-      {elements.map((element, index) => (
-        <View style={styles.contentFotoKerusakan} key={index}>
-          <View style={styles.subContentKerusakan}>
-            <TouchableOpacity>
-              <AntDesign name="edit" size={20} color="green" />
-            </TouchableOpacity>
-            <Text style={styles.textKerusakan}>Foto Kerusakan {index + 1}</Text>
-          </View>
-          <View style={styles.subContentFotoKerusakan}>
-            <View style={styles.fotoKerusakan}>
-              {/* <Image
-                source={{ uri: "https://via.placeholder.com/150" }}
-                style={{ width: "100%", height: "100%" }}
-              /> */}
+    <>
+      <View style={styles.containerForm}>
+        <View style={styles.contentFormIcon}>
+          <View style={styles.subContentFormIcon1}>
+            <View style={styles.subContentFormBox1}></View>
+            <View style={styles.iconForm1}>
+              <MaterialCommunityIcons
+                name="car-outline"
+                size={35}
+                color="#3567FC"
+              />
+              <MaterialCommunityIcons
+                name="shield-check"
+                size={22}
+                color="#3567FC"
+                style={{ position: "absolute", top: 3, left: 35 }}
+              />
             </View>
-            <View style={styles.filenameKerusakan}>
-              <Text style={styles.textFilenameKerusakan}>filee.jpg</Text>
-              <Text style={styles.textFilesizeKerusakan}>1 Mb</Text>
+            <View style={styles.contentTextIconForm1}>
+              <Text style={styles.textForm1}>Foto SIM & STNK</Text>
             </View>
-            <View style={styles.iconTrash}>
-              <TouchableOpacity onPress={() => removeElement(index)}>
-                <Feather name="trash-2" size={24} color="#3567FC" />
+          </View>
+          <View style={styles.subContentFormIcon2}>
+            <View style={styles.subContentFormBox2}></View>
+            <View style={styles.iconForm2}>
+              <Image
+                source={collaboration}
+                alt="collaboration"
+                style={styles.collaborationImage}
+              />
+              <Ionicons
+                name="checkmark-circle"
+                size={22}
+                color="green"
+                style={{ position: "absolute", top: 13, left: 22 }}
+              />
+            </View>
+          </View>
+        </View>
+        <View style={styles.contentInformationRegistrasiKlaim}>
+          <View style={styles.subContentInformationRegistrasiKlaim}>
+            <Text style={styles.informationRegistrasiKlaimKey}>No. Polisi</Text>
+            <Text style={styles.informationRegistrasiKlaimValue}>
+              B 1234 EFG
+            </Text>
+          </View>
+          <View style={styles.subContentInformationRegistrasiKlaim}>
+            <Text style={styles.informationRegistrasiKlaimKey}>
+              Nama tertanggung
+            </Text>
+            <Text style={styles.informationRegistrasiKlaimValue}>
+              Fajar Prihadi
+            </Text>
+          </View>
+          <View style={styles.subContentInformationRegistrasiKlaim}>
+            <Text style={styles.informationRegistrasiKlaimKey}>No. Polis</Text>
+            <Text style={styles.informationRegistrasiKlaimValue}>
+              VCL2007001
+            </Text>
+          </View>
+        </View>
+        {elements?.map((element, index) => (
+          <View style={styles.contentFotoKerusakan} key={index}>
+            <View style={styles.subContentKerusakan}>
+              <TouchableOpacity
+                onPress={() => setModalFotoKerusakanIndex(index)}
+              >
+                <AntDesign name="edit" size={20} color="green" />
               </TouchableOpacity>
+              <Text style={styles.textKerusakan}>
+                Foto Kerusakan {index + 1}
+              </Text>
             </View>
-          </View>
-          <View style={styles.subContentDeskripsiKerusakan}>
-            <TextInput
-              style={styles.deskripsiKerusakan}
-              placeholder="Deskripsi kerusakan"
-              multiline={true}
-              numberOfLines={4}
+            <View style={styles.subContentFotoKerusakan}>
+              <View style={styles.fotoKerusakan}>
+                <Image
+                  source={{
+                    uri: element.foto?.uri
+                      ? element.foto.uri
+                      : "https://via.placeholder.com/150",
+                  }}
+                  style={styles.foto}
+                />
+              </View>
+              <View style={styles.filenameKerusakan}>
+                <Text style={styles.textFilenameKerusakan}>
+                  {element.foto?.fileName ? element.foto.fileName : ""}
+                </Text>
+                <Text style={styles.textFilesizeKerusakan}>
+                  {element.foto?.filesize
+                    ? (element.foto.filesize / (1024 * 1024)).toFixed(2) + "Mb"
+                    : ""}
+                </Text>
+              </View>
+              <View style={styles.iconTrash}>
+                <TouchableOpacity onPress={() => removeElement(index)}>
+                  <Feather name="trash-2" size={24} color="#3567FC" />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.subContentDeskripsiKerusakan}>
+              <TextInput
+                style={styles.deskripsiKerusakan}
+                placeholder="Deskripsi kerusakan"
+                multiline={true}
+                numberOfLines={4}
+              />
+            </View>
+            <ModalPhotoKerusakan
+              form={form}
+              setForm={setForm}
+              error={error}
+              setError={setError}
+              modalFotoKerusakan={modalFotoKerusakanIndex === index}
+              setModalFotoKerusakan={() => setModalFotoKerusakanIndex(null)}
+              index={index}
+              handleDeskripsiChange={handleDeskripsiChange}
             />
           </View>
+        ))}
+        <View style={styles.subContentButtonTambah}>
+          <TouchableOpacity style={styles.btnTambah} onPress={addElement}>
+            <AntDesign name="pluscircleo" size={28} color="#3567FC" />
+            <Text style={styles.textTambahFoto}>Tambah Foto</Text>
+          </TouchableOpacity>
         </View>
-      ))}
-
-      <View style={styles.subContentButtonTambah}>
-        <TouchableOpacity style={styles.btnTambah} onPress={addElement}>
-          <AntDesign name="pluscircleo" size={28} color="#3567FC" />
-          <Text style={styles.textTambahFoto}>Tambah Foto</Text>
-        </TouchableOpacity>
+        <View style={styles.subContentButtonSimpan}>
+          <TouchableOpacity style={styles.btnSimpan}>
+            <Text style={styles.textSimpan}>Simpan</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-
-      <View style={styles.subContentButtonSimpan}>
-        <TouchableOpacity style={styles.btnSimpan}>
-          <Text style={styles.textSimpan}>Simpan</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </>
   );
 }
 
@@ -308,6 +327,10 @@ const styles = StyleSheet.create({
     height: "100%",
     borderColor: "#A8A8A8",
     borderWidth: 1,
+  },
+  foto: {
+    width: "100%",
+    height: "100%",
   },
   filenameKerusakan: {
     width: "50%",
