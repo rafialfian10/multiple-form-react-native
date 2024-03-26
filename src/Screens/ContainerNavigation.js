@@ -23,7 +23,7 @@ const ContainerNavigation = ({ navigation }) => {
             },
             headerLeft: () => (
               <TouchableOpacity
-                onPress={() => navigation.goBack()}
+                // onPress={() => navigation.goBack()}
                 style={{ marginLeft: 8, marginTop: 3 }}
               >
                 <AntDesign name="arrowleft" size={20} color="#3567FC" />
