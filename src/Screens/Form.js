@@ -48,7 +48,7 @@ const Form = ({ navigation }) => {
   const screenDisplay = () => {
     if (screen === 0) {
       return (
-        <Form3
+        <Form1
           form={form}
           setForm={setForm}
           error={error}

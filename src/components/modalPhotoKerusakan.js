@@ -13,12 +13,10 @@ function ModalPhotoKerusakan(props) {
   const {
     form,
     setForm,
-    error,
-    setError,
     modalFotoKerusakan,
     setModalFotoKerusakan,
     index,
-    handleDeskripsiChange,
+    element,
   } = props;
 
   const handleOpenGallery = async () => {
@@ -35,11 +33,18 @@ function ModalPhotoKerusakan(props) {
       delete result.cancelled;
 
       if (!result.canceled) {
+        const foto = {
+          uri: result.assets[0].uri,
+          fileName: result.assets[0].fileName,
+          filesize: result.assets[0].filesize,
+          mimeType: result.assets[0].mimeType,
+        };
+
         let updatedFotoKerusakan = [...form.fotoKerusakan];
         if (!updatedFotoKerusakan[index]) {
           updatedFotoKerusakan[index] = {};
         }
-        updatedFotoKerusakan[index] = result.assets[0];
+        updatedFotoKerusakan[index] = foto;
         setForm({ ...form, fotoKerusakan: updatedFotoKerusakan });
       }
     } catch (error) {
@@ -62,16 +67,29 @@ function ModalPhotoKerusakan(props) {
       delete result.cancelled;
 
       if (!result.canceled) {
+        const foto = {
+          uri: result.assets[0].uri,
+          fileName: result.assets[0].fileName,
+          filesize: result.assets[0].filesize,
+          mimeType: result.assets[0].mimeType,
+        };
+
         let updatedFotoKerusakan = [...form.fotoKerusakan];
         if (!updatedFotoKerusakan[index]) {
           updatedFotoKerusakan[index] = {};
         }
-        updatedFotoKerusakan[index] = result.assets[0];
+        updatedFotoKerusakan[index] = foto;
         setForm({ ...form, fotoKerusakan: updatedFotoKerusakan });
       }
     } catch (error) {
       console.log("camera error", error);
     }
+  };
+
+  const handleDeskripsiKerusakanChange = (value) => {
+    const updatedDeskripsi = [...form.deskripsiKerusakan];
+    updatedDeskripsi[index] = value;
+    setForm({ ...form, deskripsiKerusakan: updatedDeskripsi });
   };
 
   return (
@@ -93,7 +111,9 @@ function ModalPhotoKerusakan(props) {
         >
           <View style={styles.modalViewPhotoKerusakan}>
             <View style={styles.subContentPhotoKerusakan}>
-              <Text style={styles.textDeskripsi}>Foto Kerusakan {index + 1}</Text>
+              <Text style={styles.textDeskripsi}>
+                Foto Kerusakan {index + 1}
+              </Text>
               <TouchableOpacity
                 style={styles.btnUpload}
                 onPress={handleOpenGallery}
@@ -108,6 +128,14 @@ function ModalPhotoKerusakan(props) {
                 <FontAwesome name="camera" size={24} color="#3567FC" />
                 <Text style={styles.textUpload}>Ambil Foto</Text>
               </TouchableOpacity>
+              <Text style={styles.textFilename}>
+                File :{" "}
+                {element
+                  ? element.length > 20
+                    ? element.slice(0, 20) + "..."
+                    : element
+                  : ""}
+              </Text>
             </View>
             <View style={styles.subContentPhotoKerusakan}>
               <Text style={styles.textDeskripsi}>Deskripsi</Text>
@@ -116,10 +144,8 @@ function ModalPhotoKerusakan(props) {
                 placeholder="Deskripsi kerusakan"
                 multiline={true}
                 numberOfLines={4}
-                // value={form.deskripsiKerusakan.join("\n")}
-                // onChangeText={(value) =>
-                //   handleDeskripsiChange("deskripsiKerusakan", value.split("\n"))
-                // }
+                value={form.deskripsiKerusakan[index]}
+                onChangeText={handleDeskripsiKerusakanChange}
               />
             </View>
             <View style={styles.subContentButtonSimpan}>
@@ -127,7 +153,7 @@ function ModalPhotoKerusakan(props) {
                 style={styles.btnSimpan}
                 onPress={() => setModalFotoKerusakan(false)}
               >
-                <Text style={styles.textSimpan}>Simpan</Text>
+                <Text style={styles.textSimpan}>Tambah</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -199,6 +225,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 12,
     color: "#A8A8A8",
+  },
+  textFilename: {
+    fontSize: 12,
+    color: "#3567FC",
   },
   deskripsiKerusakan: {
     borderColor: "#A8A8A8",

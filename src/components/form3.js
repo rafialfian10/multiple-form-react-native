@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   AntDesign,
   Feather,
@@ -18,36 +18,42 @@ import collaboration from "../../assets/collaboration.png";
 
 function Form3({ form, setForm, error, setError }) {
   const [modalFotoKerusakanIndex, setModalFotoKerusakanIndex] = useState(null);
-  const [elements, setElements] = useState(() => {
-    if (Array.isArray(form?.fotoKerusakan) && form?.fotoKerusakan.length > 0) {
-      return form?.fotoKerusakan?.map((item, index) => ({
+  const [elements, setElements] = useState([]);
+
+  useEffect(() => {
+    if (Array.isArray(form.fotoKerusakan) && form.fotoKerusakan.length > 0) {
+      const updatedElements = form.fotoKerusakan.map((item, index) => ({
         id: index + 1,
         foto: item,
       }));
+      setElements(updatedElements);
     } else {
-      return [];
+      setElements([]);
     }
-  });
-
-  console.log("data", elements);
+  }, [form.fotoKerusakan]);
 
   const addElement = () => {
-    setElements([...elements, { id: elements.length + 1 }]);
+    // setElements([...elements, { id: elements.length + 1 }]);
+    const newElement = { id: elements.length + 1 };
+    setElements([...elements, newElement]);
   };
 
   const removeElement = (index) => {
     const updatedForm = { ...form };
     updatedForm.fotoKerusakan.splice(index, 1);
+    updatedForm.deskripsiKerusakan.splice(index, 1);
     setForm(updatedForm);
 
     const updatedElements = elements.filter((_, i) => i !== index);
+    updatedElements.forEach((element, i) => {
+      element.id = i + 1;
+    });
     setElements(updatedElements);
   };
 
-  const handleDeskripsiChange = (index, deskripsi) => {
-    const updatedElements = [...elements];
-    updatedElements[index].deskripsi = deskripsi;
-    setElements(updatedElements);
+  const handleSubmit = () => {
+    const formDataJSON = JSON.stringify(form, null, 2);
+    alert(formDataJSON);
   };
 
   return (
@@ -137,7 +143,11 @@ function Form3({ form, setForm, error, setError }) {
               </View>
               <View style={styles.filenameKerusakan}>
                 <Text style={styles.textFilenameKerusakan}>
-                  {element.foto?.fileName ? element.foto.fileName : ""}
+                  {element.foto?.fileName
+                    ? element.foto.fileName.length > 20
+                      ? element.foto.fileName.slice(0, 20) + "..."
+                      : element.foto.fileName
+                    : ""}
                 </Text>
                 <Text style={styles.textFilesizeKerusakan}>
                   {element.foto?.filesize
@@ -157,17 +167,17 @@ function Form3({ form, setForm, error, setError }) {
                 placeholder="Deskripsi kerusakan"
                 multiline={true}
                 numberOfLines={4}
+                editable={false}
+                value={form.deskripsiKerusakan[index] || ""}
               />
             </View>
             <ModalPhotoKerusakan
               form={form}
               setForm={setForm}
-              error={error}
-              setError={setError}
               modalFotoKerusakan={modalFotoKerusakanIndex === index}
               setModalFotoKerusakan={() => setModalFotoKerusakanIndex(null)}
               index={index}
-              handleDeskripsiChange={handleDeskripsiChange}
+              element={element.foto?.fileName}
             />
           </View>
         ))}
@@ -178,7 +188,7 @@ function Form3({ form, setForm, error, setError }) {
           </TouchableOpacity>
         </View>
         <View style={styles.subContentButtonSimpan}>
-          <TouchableOpacity style={styles.btnSimpan}>
+          <TouchableOpacity style={styles.btnSimpan} onPress={handleSubmit}>
             <Text style={styles.textSimpan}>Simpan</Text>
           </TouchableOpacity>
         </View>
@@ -342,7 +352,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F2F7FF",
   },
   textFilenameKerusakan: {
-    fontSize: 13,
+    fontSize: 12,
     color: "#000000",
     paddingHorizontal: 5,
   },

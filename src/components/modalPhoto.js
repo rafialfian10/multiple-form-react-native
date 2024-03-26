@@ -40,8 +40,6 @@ function ModalPhoto(props) {
       if (!result.canceled) {
         const foto = {
           uri: result.assets[0].uri,
-          fileName: result.assets[0].fileName,
-          fileSize: result.assets[0].fileSize,
           mimeType: result.assets[0].mimeType,
         };
 
@@ -104,8 +102,6 @@ function ModalPhoto(props) {
       if (!result.canceled) {
         const foto = {
           uri: result.assets[0].uri,
-          fileName: result.assets[0].fileName,
-          fileSize: result.assets[0].fileSize,
           mimeType: result.assets[0].mimeType,
         };
 
